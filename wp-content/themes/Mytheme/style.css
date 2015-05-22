@@ -1,0 +1,12 @@
+/*
+Theme Name: Mytheme
+Description: Дочерняя тема для темы Twenty Ten
+Author: Stanislav
+Template: twentythirteen
+*/
+
+@import url("../twentythirteen/style.css");
+
+h1{
+    color: #003399;
+}
