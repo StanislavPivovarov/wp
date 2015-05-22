@@ -32,7 +32,15 @@ class Template
             <input type="file" name="my_image_upload" id="my_image_upload"  multiple="false" />
 
             <input type="hidden" name="custom_fields_nonce" value="<?php echo wp_create_nonce( plugin_basename(__FILE__), 'myplugin_noncename' ); ?>"/>
-    <?php
 
+        <?php }
+
+
+    static function custom_fields_photo($post)
+    {
+//        $id = get_post_meta($post->ID,id);
+//        print_r( $post->ID);
+//          $photo[]=get_attached_file($post->ID+1));
+         echo do_shortcode( '[gallery]' );
     }
 }

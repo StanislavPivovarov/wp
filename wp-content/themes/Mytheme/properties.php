@@ -6,13 +6,34 @@ get_header(); ?>
 
     <div id="primary" class="content-area">
         <div id="content" class="site-content" role="main">
+            <?php
+            $args = array(
+                'post_type' => 'properties',
 
-            <?php query_posts( array( 'post_type' => 'propertys', 'showposts' => 10 ) );
-            if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
-                <?php get_template_part( 'properties', get_post_format()); ?>
-            <?php endwhile; endif; wp_reset_query(); ?>
+                'meta_query' => array(
+                    'relation' => 'OR',
+                    array(
+                        'key' => 'price',
+                    ),
+                ),
+
+                'tax_query' => array(
+                                    array(
+                                            'taxonomy' => 'prop_categories',
+                                            'field' => 'slug',
+                                            'terms' => 'buy'
+                                    )
+                                )
+
+            );
+            $posts = get_posts( $args );
 
 
+            foreach( $posts as $pst ){
+                var_dump($pst);
+                echo $pst->post_content .'<br>';
+            }
+            ?>
         </div><!-- #content -->
     </div><!-- #primary -->
 

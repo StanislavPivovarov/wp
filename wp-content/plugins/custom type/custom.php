@@ -7,9 +7,14 @@ class CustomType
         add_action('init', function () {
             $this->create_custom_properties();
             $this->create_custom_taxonomies();
-            add_action('add_meta_boxes', array($this, 'create_custom_fields'));
+            add_action('add_meta_boxes', array($this, 'create_custom_box'));
             add_action('save_post', array($this, 'custom_fields_update'));
+            add_action('post_edit_form_tag',array($this, 'edit_form_tag'));
         });
+    }
+
+    function edit_form_tag() {
+        echo ' enctype="multipart/form-data"';
     }
 
     public function create_custom_properties()
@@ -28,7 +33,7 @@ class CustomType
 
                 'supports' => array('title', 'editor', 'page-attributes'),
                 'hierarchical' => true,
-                'taxonomies' => array('')
+                'taxonomies' => array('buy','rent')
             )
         );
     }
@@ -47,18 +52,19 @@ class CustomType
         );
     }
 
-    public function create_custom_fields()
+    public function create_custom_box()
     {
         add_meta_box('custom_fields', 'Custom Fields', array('Template','custom_fields_html'), 'properties', 'normal', 'high');
+        add_meta_box('photos','Photos',array('Template','custom_fields_photo'),'properties','normal','high');
     }
 
     public  function custom_fields_update($post_id)
     {
-//        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return false; // если это автосохранение
-//        if (!current_user_can('edit_post', $post_id)) return false; // если юзер не имеет право редактировать запись
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return false; // если это автосохранение
+        if (!current_user_can('edit_post', $post_id)) return false; // если юзер не имеет право редактировать запись
 
         if (!isset($_POST['extra'])) return false;
-        if ( ! wp_verify_nonce( $_POST['custom_fields_nonce'], plugin_basename(__FILE__)))return false; // проверка
+//        if ( ! wp_verify_nonce( $_POST['custom_fields_nonce'], plugin_basename(__FILE__)))return false; // проверка
 
         $_POST['extra'] = array_map('trim', $_POST['extra']);
         foreach ($_POST['extra'] as $key => $value) {
@@ -70,8 +76,6 @@ class CustomType
             update_post_meta($post_id, $key, $value);
 
         }
-        $my = $_FILES;
-        $my;
         media_handle_upload('my_image_upload', $post_id);
         return $post_id;
     }
